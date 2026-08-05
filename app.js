@@ -1,8 +1,8 @@
 import express from "express";
 import dotenv from "dotenv";
 import connectDB from "./config/db.js";
-import healthRouter from "./routes/health.routes.js";
-import authRouter from "./routes/auth.routes.js";
+import healthRouter from "./routes/healthRoute.js";
+import authRouter from "./routes/authRoute.js";
 
 // Load environment variables
 dotenv.config();
