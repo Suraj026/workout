@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import User from "./userModel.js";
 
-const { schema } = mongoose;
+const { Schema } = mongoose;
 
 // workout schema
 const workoutSchema = new Schema({
