@@ -11,6 +11,7 @@ signupRouter.post("/signup", async (req, res) => {
 
   // Validate the user data
   if (!username || !email || !password) {
+    console.log(400, "Missing fields");
     return res.status(400).json({
       message: "Missing fields",
     });
@@ -19,6 +20,7 @@ signupRouter.post("/signup", async (req, res) => {
   // Check if the user already exists in the database
   const existingUser = await User.findOne({ email: email }).exec();
   if (existingUser) {
+    console.log(409, "User already exists");
     return res.status(409).json({
       message: "User already exists",
     });
@@ -38,13 +40,14 @@ signupRouter.post("/signup", async (req, res) => {
     // Save the new user to the database
     await User.create(newUser);
   } catch (error) {
-    console.error("Error: ", error);
+    console.error(500, "Error creating user");
     return res.status(500).json({
       message: "Error creating user",
     });
   }
 
-  res.status(201).json({
+  console.log(201, "User created successfully");
+  return res.status(201).json({
     message: "User created successfully",
   });
 });

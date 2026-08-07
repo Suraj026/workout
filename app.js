@@ -5,6 +5,7 @@ import authMiddleware from "./middleware/authMiddleware.js";
 import healthRouter from "./routes/healthRoute.js";
 import signupRouter from "./routes/signupRoute.js";
 import loginRouter from "./routes/loginRoute.js";
+import workoutRouter from "./routes/workoutRoute.js";
 
 // Load environment variables
 dotenv.config();
@@ -18,7 +19,7 @@ app.use(express.json());
 app.use("/", healthRouter, signupRouter, loginRouter);
 
 // Protected routes
-app.use("/auth", authMiddleware);
+app.use("/auth", authMiddleware, workoutRouter);
 
 const port = process.env.PORT || 5000;
 app.listen(port, () => {
