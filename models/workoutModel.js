@@ -19,7 +19,6 @@ const workoutSchema = new Schema({
   },
   weight: {
     type: Number,
-    required: true,
   },
   date: {
     type: Date,

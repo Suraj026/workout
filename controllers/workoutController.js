@@ -3,15 +3,6 @@ import Workout from "../models/workoutModel.js";
 // CREATE a new workout
 export const createWorkout = async (req, res) => {
   const { exerciseName, sets, reps, weight, date, completed } = req.body;
-  if (!exerciseName || sets == null || reps == null || weight == null) {
-    return res.status(400).json({ message: "Missing required fields" });
-  }
-  if (sets <= 0 || reps <= 0 || weight <= 0) {
-    console.log(400, "Sets, reps, and weight must be positive numbers");
-    return res
-      .status(400)
-      .json({ message: "Sets, reps, and weight must be non-negative numbers" });
-  }
 
   // Create a new workout object
   const newWorkout = {
