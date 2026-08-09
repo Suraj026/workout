@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import AppError from "../utils/appError.js";
 import User from "../models/userModel.js";
 
 const loginUser = async (req, res) => {
@@ -9,33 +10,26 @@ const loginUser = async (req, res) => {
   const existingUser = await User.findOne({ email: email }).exec();
 
   if (!existingUser) {
-    console.log(401, "Invalid email or password");
-    return res.status(401).json({
-      message: "Invalid email or password",
-    });
+    throw new AppError("Invalid email or password", 401);
   }
 
   // Compare passwords
   try {
     const match = await bcrypt.compare(password, existingUser.password);
     if (!match) {
-      console.log(401, "Invalid email or password");
-      return res.status(401).json({
-        message: "Invalid email or password",
-      });
+      throw new AppError("Invalid email or password", 401);
     }
 
-    // return JWT
     if (!process.env.JWT_SECRET) {
-      console.error(500, "JWT secret is not defined");
-      return res.status(500).json({
-        message: "JWT secret is not defined",
-      });
+      throw new AppError("JWT secret is not defined", 500);
     }
 
+    // generate token
     const token = jwt.sign({ id: existingUser._id }, process.env.JWT_SECRET, {
       expiresIn: "1h",
     });
+
+    // return JWT
     console.log(200, "Login successful");
     return res.status(200).json({
       message: "Login successful",
@@ -43,10 +37,8 @@ const loginUser = async (req, res) => {
       id: existingUser._id,
     });
   } catch (error) {
-    console.error(500, "Error comparing passwords");
-    return res.status(500).json({
-      message: "Error comparing passwords",
-    });
+    if (error instanceof AppError) throw error;
+    throw new AppError("Error comparing passwords", 500);
   }
 };
 

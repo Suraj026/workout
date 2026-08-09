@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import AppError from "../utils/appError.js";
 import User from "../models/userModel.js";
 
 const signupUser = async (req, res) => {
@@ -9,10 +10,7 @@ const signupUser = async (req, res) => {
   // Check if the user already exists in the database
   const existingUser = await User.findOne({ email: email }).exec();
   if (existingUser) {
-    console.log(409, "User already exists");
-    return res.status(409).json({
-      message: "User already exists",
-    });
+    throw new AppError("User already exists", 409);
   }
 
   try {
@@ -26,10 +24,8 @@ const signupUser = async (req, res) => {
       password: hashedPassword,
     });
   } catch (error) {
-    console.error(500, "Error creating user");
-    return res.status(500).json({
-      message: "Error creating user",
-    });
+    if (error instanceof AppError) throw error;
+    throw new AppError("Error creating user", 500);
   }
 
   console.log(201, "User created successfully");

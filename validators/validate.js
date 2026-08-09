@@ -6,6 +6,7 @@ export const validate = (schema) => {
     const result = schema.safeParse(req.body);
 
     if (!result.success) {
+      console.error(400, "Validation failed");
       return res.status(400).json({
         message: "Validation failed",
         errors: z.prettifyError(result.error),

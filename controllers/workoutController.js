@@ -1,3 +1,4 @@
+import AppError from "../utils/appError.js";
 import Workout from "../models/workoutModel.js";
 
 // CREATE a new workout
@@ -23,10 +24,8 @@ export const createWorkout = async (req, res) => {
       message: "Workout created successfully",
     });
   } catch (error) {
-    console.error(500, "Error creating workout");
-    return res.status(500).json({
-      message: "Error creating workout",
-    });
+    if (error instanceof AppError) throw error;
+    throw new AppError("Error creating workout", 500);
   }
 };
 
@@ -37,10 +36,8 @@ export const getAllWorkouts = async (req, res) => {
     console.log(200, "Workouts fetched successfully");
     return res.status(200).json(workouts);
   } catch (error) {
-    console.error(500, "Error fetching workouts");
-    return res.status(500).json({
-      message: "Error fetching workouts",
-    });
+    if (error instanceof AppError) throw error;
+    throw new AppError("Error fetching workouts", 500);
   }
 };
 
@@ -51,26 +48,23 @@ export const getWorkout = async (req, res) => {
   try {
     const workout = await Workout.findById(workoutId).exec();
     if (!workout) {
-      console.log(404, "Workout not found");
-      return res.status(404).json({
-        message: "Workout not found",
-      });
+      throw new AppError("Workout not found", 404);
     }
+
     // Check if the workout belongs to the authenticated user
     if (workout.user.toString() !== req.user.id) {
-      console.log(403, "Forbidden: You do not have access to this workout");
-      return res.status(403).json({
-        message: "Forbidden: You do not have access to this workout",
-      });
+      throw new AppError(
+        "Forbidden: You do not have access to this workout",
+        403,
+      );
     }
+
     // Return the workout
     console.log(200, "Workout fetched successfully");
     return res.status(200).json(workout);
   } catch (error) {
-    console.error(500, "Error fetching workout");
-    return res.status(500).json({
-      message: "Error fetching workout",
-    });
+    if (error instanceof AppError) throw error;
+    throw new AppError("Error fetching workout", 500);
   }
 };
 
@@ -82,16 +76,13 @@ export const updateWorkout = async (req, res) => {
   try {
     const workout = await Workout.findById(workoutId).exec();
     if (!workout) {
-      console.log(404, "Workout not found");
-      return res.status(404).json({
-        message: "Workout not found",
-      });
+      throw new AppError("Workout not found", 404);
     }
     if (workout.user.toString() !== req.user.id) {
-      console.log(403, "Forbidden: You do not have access to this workout");
-      return res.status(403).json({
-        message: "Forbidden: You do not have access to this workout",
-      });
+      throw new AppError(
+        "Forbidden: You do not have access to this workout",
+        403,
+      );
     }
 
     // Update the workout with the new data
@@ -103,10 +94,8 @@ export const updateWorkout = async (req, res) => {
     console.log(200, "Workout updated successfully");
     return res.status(200).json(updatedWorkout);
   } catch (error) {
-    console.error(500, "Error updating workout");
-    return res.status(500).json({
-      message: "Error updating workout",
-    });
+    if (error instanceof AppError) throw error;
+    throw new AppError("Error updating workout", 500);
   }
 };
 
@@ -118,16 +107,13 @@ export const deleteWorkout = async (req, res) => {
   try {
     const workout = await Workout.findById(workoutId).exec();
     if (!workout) {
-      console.log(404, "Workout not found");
-      return res.status(404).json({
-        message: "Workout not found",
-      });
+      throw new AppError("Workout not found", 404);
     }
     if (workout.user.toString() !== req.user.id) {
-      console.log(403, "Forbidden: You do not have access to this workout");
-      return res.status(403).json({
-        message: "Forbidden: You do not have access to this workout",
-      });
+      throw new AppError(
+        "Forbidden: You do not have access to this workout",
+        403,
+      );
     }
 
     // Delete the workout
@@ -137,9 +123,7 @@ export const deleteWorkout = async (req, res) => {
       message: "Workout deleted successfully",
     });
   } catch (error) {
-    console.error(500, "Error deleting workout");
-    return res.status(500).json({
-      message: "Error deleting workout",
-    });
+    if (error instanceof AppError) throw error;
+    throw new AppError("Error deleting workout", 500);
   }
 };

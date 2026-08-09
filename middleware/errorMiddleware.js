@@ -1,8 +1,10 @@
 // Error handler middleware
 const errorHandler = (err, req, res, next) => {
-  const statusCode = res.statusCode ? res.statusCode : 500;
-  console.error(statusCode, err.message);
-  return res.status(statusCode).json({
+  console.error(err.statusCode, err.message);
+  return res.status(err.statusCode).json({
+    success: false,
     message: err.message,
   });
 };
+
+export default errorHandler;
