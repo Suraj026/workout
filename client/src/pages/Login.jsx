@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router";
+import Signup from "./Signup.jsx";
 import api from "../api/axios.js";
 
-const Signup = () => {
+const Login = () => {
   const navigate = useNavigate();
 
-  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -15,14 +15,16 @@ const Signup = () => {
     setError("");
 
     try {
-      await api.post("/signup", {
-        username,
+      const response = await api.post("/login", {
         email,
         password,
       });
+      // extract token and store
+      const token = response.data.token;
+      localStorage.setItem("access_token", token);
 
-      // if login successful
-      navigate("/login");
+      // redirect
+      navigate("/dashboard");
     } catch (err) {
       setError(err.response);
     }
@@ -30,22 +32,10 @@ const Signup = () => {
 
   return (
     <>
-      <h2>Signup</h2>
+      <h2>Login</h2>
       <form onSubmit={handleSubmit}>
         <div>
           <label>
-            Username:
-            <input
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
-            />
-          </label>
-        </div>
-        <div>
-          <label>
-            Email:
             <input
               type="email"
               value={email}
@@ -56,7 +46,6 @@ const Signup = () => {
         </div>
         <div>
           <label>
-            Password:
             <input
               type="password"
               value={password}
@@ -65,17 +54,16 @@ const Signup = () => {
             />
           </label>
         </div>
-        <button type="submit">Sign Up</button>
+        <button type="submit">Login</button>
       </form>
 
       {error && <p>{error}</p>}
 
       <p>
-        Already have an account
-        <Link to="/login">Login</Link>
+        New User ? <Link to="/signup">Create an account</Link>
       </p>
     </>
   );
 };
 
-export default Signup;
+export default Login;

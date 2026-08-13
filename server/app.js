@@ -1,5 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
+import cors from "cors";
 import connectDB from "./config/db.js";
 import healthRouter from "./routes/healthRoute.js";
 import signupRouter from "./routes/signupRoute.js";
@@ -15,6 +16,12 @@ dotenv.config();
 await connectDB();
 
 const app = express();
+
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+  }),
+);
 app.use(express.json());
 
 // Normal routes
