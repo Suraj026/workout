@@ -26,7 +26,7 @@ const Login = () => {
       // redirect
       navigate("/dashboard");
     } catch (err) {
-      setError(err.response);
+      setError(err.response.data.message || "Login failed");
     }
   };
 

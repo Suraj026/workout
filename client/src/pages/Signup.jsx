@@ -24,7 +24,7 @@ const Signup = () => {
       // if login successful
       navigate("/login");
     } catch (err) {
-      setError(err.response);
+      setError(err.response.data.message || "Signup failed");
     }
   };
 
@@ -71,8 +71,7 @@ const Signup = () => {
       {error && <p>{error}</p>}
 
       <p>
-        Already have an account
-        <Link to="/login">Login</Link>
+        Already have an account ? <Link to="/login">Login</Link>
       </p>
     </>
   );

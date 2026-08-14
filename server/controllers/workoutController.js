@@ -20,9 +20,7 @@ export const createWorkout = async (req, res) => {
     // Save the new workout to the database
     await Workout.create(newWorkout);
     console.log(201, "Workout created successfully");
-    return res.status(201).json({
-      message: "Workout created successfully",
-    });
+    return res.status(201).json(newWorkout);
   } catch (error) {
     if (error instanceof AppError) throw error;
     throw new AppError("Error creating workout", 500);
