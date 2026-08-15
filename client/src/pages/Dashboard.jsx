@@ -66,6 +66,24 @@ const Dashboard = () => {
     }
   };
 
+  const handleDeleteWorkout = async (id) => {
+    const confirmed = window.confirm("Do you want to delete this workout ?");
+
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      await api.delete(`/auth/workout/${id}`);
+
+      setWorkout((prevWorkouts) =>
+        prevWorkouts.filter((workout) => workout._id !== id),
+      );
+    } catch (err) {
+      setError("Failed to delete workout");
+    }
+  };
+
   return (
     <>
       <h1>Dashboard</h1>
@@ -135,6 +153,9 @@ const Dashboard = () => {
                 <p>Date: {new Date(item.date).toLocaleDateString()}</p>
               )}
               <p>Status: {item.completed ? "Done" : "Not Done"}</p>
+              <button onClick={() => handleDeleteWorkout(item._id)}>
+                Delete
+              </button>
             </div>
           ))}
         </div>
