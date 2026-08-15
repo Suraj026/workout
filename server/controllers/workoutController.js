@@ -30,7 +30,25 @@ export const createWorkout = async (req, res) => {
 // GET all workouts for a specific user
 export const getAllWorkouts = async (req, res) => {
   try {
-    const workouts = await Workout.find({ user: req.user.id }).exec();
+    // create filters
+    const filter = {
+      user: req.user.id,
+    };
+
+    // add "completed" filter
+    if (req.query.completed !== undefined) {
+      filter.completed = req.query.completed === "true";
+    }
+
+    // add "date" filter
+    let sort = {};
+    if (req.query.sort === "date") {
+      sort = { date: -1 };
+    }
+
+    // Find workouts with filter
+    const workouts = await Workout.find(filter).sort(sort).exec();
+
     console.log(200, "Workouts fetched successfully");
     return res.status(200).json(workouts);
   } catch (error) {
