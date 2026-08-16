@@ -19,6 +19,9 @@ const Dashboard = () => {
   const [filterStatus, setFilterStatus] = useState("all");
   const [sortOrder, setSortOrder] = useState("desc");
 
+  // edit
+  const [editingId, setEditingId] = useState(null);
+
   // fetch workout on load
   useEffect(() => {
     const fetchWorkouts = async () => {
@@ -32,9 +35,9 @@ const Dashboard = () => {
         }
 
         if (sortOrder === "asc") {
-          query += query ? "&sort=date_asc" : "?sort:date_asc";
+          query += query ? "&sort=date_asc" : "?sort=date_asc";
         } else if (sortOrder === "desc") {
-          query += query ? "&sort=date_desc" : "?sort:date_desc";
+          query += query ? "&sort=date_desc" : "?sort=date_desc";
         }
 
         const response = await api.get(`/auth/workout/${query}`);
@@ -48,7 +51,8 @@ const Dashboard = () => {
     fetchWorkouts();
   }, [filterStatus, sortOrder]);
 
-  const handleCreateWorkout = async (e) => {
+  // create workout handler
+  const handleSubmitWorkout = async (e) => {
     e.preventDefault();
     setError("");
 
@@ -67,11 +71,21 @@ const Dashboard = () => {
         workoutData.date = date;
       }
 
-      const response = await api.post("/auth/create", workoutData);
+      if (editingId === null) {
+        const response = await api.post("/auth/create", workoutData);
 
-      // add workouts to UI
-      setWorkout((prevWorkout) => [...prevWorkout, response.data]);
+        // add workouts to UI
+        setWorkout((prevWorkout) => [...prevWorkout, response.data]);
+      } else {
+        const response = await api.put(
+          `/auth/workout/${editingId}`,
+          workoutData,
+        );
 
+        setWorkout((prevWorkout) =>
+          prevWorkout.map((w) => (w._id === editingId ? response.data : w)),
+        );
+      }
       // reset form
       setExerciseName("");
       setSets("");
@@ -79,11 +93,14 @@ const Dashboard = () => {
       setWeight("");
       setDate("");
       setCompleted(false);
+
+      setEditingId(null);
     } catch (err) {
       setError(err.response.data.message || "Failed to create workout");
     }
   };
 
+  // delete workout handler
   const handleDeleteWorkout = async (id) => {
     const confirmed = window.confirm("Do you want to delete this workout ?");
 
@@ -102,12 +119,33 @@ const Dashboard = () => {
     }
   };
 
+  // edit handler
+  const editHandler = (id) => {
+    const workoutToEdit = workout.find((w) => w._id === id);
+
+    if (!workoutToEdit) {
+      return;
+    }
+    setEditingId(workoutToEdit._id);
+
+    setExerciseName(workoutToEdit.exerciseName);
+    setSets(workoutToEdit.sets);
+    setReps(workoutToEdit.reps);
+    setWeight(workoutToEdit.weight !== undefined ? workoutToEdit.weight : "");
+    setDate(
+      workoutToEdit.data
+        ? new Date(workoutToEdit.date).toISOString().split("T")[0]
+        : "",
+    );
+    setCompleted(workoutToEdit.completed);
+  };
+
   return (
     <>
       <h1>Dashboard</h1>
       {error && <p>{error}</p>}
-      <h2>Create Workout</h2>
-      <form onSubmit={handleCreateWorkout}>
+      <h2>{editingId ? "Edit Workout" : "Create Workout"}</h2>
+      <form onSubmit={handleSubmitWorkout}>
         <input
           type="text"
           placeholder="Exercise Name"
@@ -148,7 +186,22 @@ const Dashboard = () => {
           />
           Completed
         </label>
-        <button type="submit">Add Submit</button>
+        <button type="submit">{editingId ? "Update" : "Create"}</button>
+        {editingId && (
+          <button
+            onClick={() => {
+              setEditingId(null);
+              setExerciseName("");
+              setReps("");
+              setSets("");
+              setWeight("");
+              setDate("");
+              setCompleted(false);
+            }}
+          >
+            Cancel
+          </button>
+        )}
       </form>
       <h2>My Workouts</h2>
 
@@ -194,6 +247,7 @@ const Dashboard = () => {
                 <p>Date: {new Date(item.date).toLocaleDateString()}</p>
               )}
               <p>Status: {item.completed ? "Done" : "Not Done"}</p>
+              <button onClick={() => editHandler(item._id)}>Edit</button>
               <button onClick={() => handleDeleteWorkout(item._id)}>
                 Delete
               </button>
