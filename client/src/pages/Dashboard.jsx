@@ -15,20 +15,38 @@ const Dashboard = () => {
   const [date, setDate] = useState("");
   const [completed, setCompleted] = useState(false);
 
+  // filter state
+  const [filterStatus, setFilterStatus] = useState("all");
+  const [sortOrder, setSortOrder] = useState("desc");
+
   // fetch workout on load
   useEffect(() => {
     const fetchWorkouts = async () => {
       try {
-        const response = await api.get("/auth/workout");
+        // create query
+        let query = "";
+        if (filterStatus === "completed") {
+          query += "?completed=true";
+        } else if (filterStatus === "pending") {
+          query += "?completed=false";
+        }
+
+        if (sortOrder === "asc") {
+          query += query ? "&sort=date_asc" : "?sort:date_asc";
+        } else if (sortOrder === "desc") {
+          query += query ? "&sort=date_desc" : "?sort:date_desc";
+        }
+
+        const response = await api.get(`/auth/workout/${query}`);
         setWorkout(response.data);
         setLoading(false);
       } catch (err) {
-        setError(err.response.data.message);
+        setError(err.response.data.message || "Failed to fetch workouts");
         setLoading(false);
       }
     };
     fetchWorkouts();
-  }, []);
+  }, [filterStatus, sortOrder]);
 
   const handleCreateWorkout = async (e) => {
     e.preventDefault();
@@ -133,6 +151,29 @@ const Dashboard = () => {
         <button type="submit">Add Submit</button>
       </form>
       <h2>My Workouts</h2>
+
+      <label>
+        Filter:
+        <select
+          value={filterStatus}
+          onChange={(e) => setFilterStatus(e.target.value)}
+        >
+          <option value="all">All</option>
+          <option value="completed">Completed</option>
+          <option value="pending">Pending</option>
+        </select>
+      </label>
+
+      <label>
+        Sort:
+        <select
+          value={sortOrder}
+          onChange={(e) => setSortOrder(e.target.value)}
+        >
+          <option value="desc">Newest first</option>
+          <option value="asc">Oldest first</option>
+        </select>
+      </label>
 
       {loading && <p>Loading ...</p>}
 
