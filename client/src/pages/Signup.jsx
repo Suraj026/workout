@@ -29,51 +29,45 @@ const Signup = () => {
   };
 
   return (
-    <>
-      <h2>Signup</h2>
+    <div className="container">
+      <h2>Sign Up</h2>
       <form onSubmit={handleSubmit}>
         <div>
-          <label>
-            Username:
-            <input
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
-            />
-          </label>
+          <label>Username</label>
+          <input
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            required
+          />
         </div>
         <div>
-          <label>
-            Email:
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </label>
+          <label>Email</label>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
         </div>
         <div>
-          <label>
-            Password:
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </label>
+          <label>Password</label>
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
         </div>
         <button type="submit">Sign Up</button>
       </form>
 
-      {error && <p>{error}</p>}
+      {error && <p className="error-msg">{error}</p>}
 
       <p>
-        Already have an account ? <Link to="/login">Login</Link>
+        Already have an account? <Link to="/login">Login</Link>
       </p>
-    </>
+    </div>
   );
 };
 

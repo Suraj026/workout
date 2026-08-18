@@ -1,5 +1,6 @@
 import AppError from "../utils/appError.js";
 import Workout from "../models/workoutModel.js";
+import { date } from "zod";
 
 // CREATE a new workout
 export const createWorkout = async (req, res) => {
@@ -18,9 +19,9 @@ export const createWorkout = async (req, res) => {
 
   try {
     // Save the new workout to the database
-    await Workout.create(newWorkout);
+    const savedWorkout = await Workout.create(newWorkout);
     console.log(201, "Workout created successfully");
-    return res.status(201).json(newWorkout);
+    return res.status(201).json(savedWorkout);
   } catch (error) {
     if (error instanceof AppError) throw error;
     throw new AppError("Error creating workout", 500);
@@ -30,7 +31,27 @@ export const createWorkout = async (req, res) => {
 // GET all workouts for a specific user
 export const getAllWorkouts = async (req, res) => {
   try {
-    const workouts = await Workout.find({ user: req.user.id }).exec();
+    // create filters
+    const filter = {
+      user: req.user.id,
+    };
+
+    // add "completed" filter
+    if (req.query.completed !== undefined) {
+      filter.completed = req.query.completed === "true";
+    }
+
+    // add "date" filter
+    let sort = {};
+    if (req.query.sort === "date_desc") {
+      sort = { date: -1 };
+    } else if (req.query.sort === "date_asc") {
+      sort = { date: 1 };
+    }
+
+    // Find workouts with filter
+    const workouts = await Workout.find(filter).sort(sort).exec();
+
     console.log(200, "Workouts fetched successfully");
     return res.status(200).json(workouts);
   } catch (error) {

@@ -109,3 +109,171 @@ code {
   padding: 4px 8px;
   background: var(--code-bg);
 }
+
+/* ===== Layout ===== */
+
+.container {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 24px 16px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* ===== Forms ===== */
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="date"],
+select {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--text-h);
+  font: 15px/1.5 var(--sans);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+input[type="date"]:focus,
+select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent-bg);
+}
+
+label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--text);
+  cursor: pointer;
+}
+
+label input[type="checkbox"] {
+  width: auto;
+  cursor: pointer;
+}
+
+/* ===== Buttons ===== */
+
+button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font: 500 15px var(--sans);
+  cursor: pointer;
+  transition: background-color 0.2s, opacity 0.2s;
+}
+
+button[type="submit"] {
+  background: var(--accent);
+  color: #fff;
+}
+
+button[type="submit"]:hover {
+  opacity: 0.9;
+}
+
+button.secondary {
+  background: var(--accent-bg);
+  color: var(--accent);
+  border: 1px solid var(--accent-border);
+}
+
+button.secondary:hover {
+  background: rgba(170, 59, 255, 0.2);
+}
+
+button.danger {
+  background: #ef4444;
+  color: #fff;
+}
+
+button.danger:hover {
+  opacity: 0.9;
+}
+
+/* ===== Error / Status ===== */
+
+.error-msg {
+  color: #ef4444;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* ===== Workout Card ===== */
+
+.workout-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px 20px;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.workout-card h3 {
+  margin: 0;
+  font-size: 18px;
+  color: var(--text-h);
+}
+
+.workout-card p {
+  margin: 0;
+  font-size: 14px;
+  color: var(--text);
+}
+
+.workout-card .workout-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.workout-card .workout-status {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+/* ===== Controls (filter / sort) ===== */
+
+.controls {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.controls label {
+  font-size: 14px;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.controls select {
+  padding: 6px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--text-h);
+  font-size: 14px;
+  cursor: pointer;
+}
