@@ -141,9 +141,9 @@ const Dashboard = () => {
   };
 
   return (
-    <>
+    <div className="container">
       <h1>Dashboard</h1>
-      {error && <p>{error}</p>}
+      {error && <p className="error-msg">{error}</p>}
       <h2>{editingId ? "Edit Workout" : "Create Workout"}</h2>
       <form onSubmit={handleSubmitWorkout}>
         <input
@@ -169,7 +169,7 @@ const Dashboard = () => {
         />
         <input
           type="number"
-          placeholder="Weight"
+          placeholder="Weight (optional)"
           value={weight}
           onChange={(e) => setWeight(e.target.value)}
         />
@@ -186,76 +186,96 @@ const Dashboard = () => {
           />
           Completed
         </label>
-        <button type="submit">{editingId ? "Update" : "Create"}</button>
-        {editingId && (
-          <button
-            onClick={() => {
-              setEditingId(null);
-              setExerciseName("");
-              setReps("");
-              setSets("");
-              setWeight("");
-              setDate("");
-              setCompleted(false);
-            }}
-          >
-            Cancel
-          </button>
-        )}
+        <div style={{ display: "flex", gap: "12px" }}>
+          <button type="submit">{editingId ? "Update" : "Create"}</button>
+          {editingId && (
+            <button
+              type="button"
+              className="secondary"
+              onClick={() => {
+                setEditingId(null);
+                setExerciseName("");
+                setReps("");
+                setSets("");
+                setWeight("");
+                setDate("");
+                setCompleted(false);
+              }}
+            >
+              Cancel
+            </button>
+          )}
+        </div>
       </form>
       <h2>My Workouts</h2>
 
-      <label>
-        Filter:
-        <select
-          value={filterStatus}
-          onChange={(e) => setFilterStatus(e.target.value)}
-        >
-          <option value="all">All</option>
-          <option value="completed">Completed</option>
-          <option value="pending">Pending</option>
-        </select>
-      </label>
+      <div className="controls">
+        <label>
+          Filter:
+          <select
+            value={filterStatus}
+            onChange={(e) => setFilterStatus(e.target.value)}
+          >
+            <option value="all">All</option>
+            <option value="completed">Completed</option>
+            <option value="pending">Pending</option>
+          </select>
+        </label>
 
-      <label>
-        Sort:
-        <select
-          value={sortOrder}
-          onChange={(e) => setSortOrder(e.target.value)}
-        >
-          <option value="desc">Newest first</option>
-          <option value="asc">Oldest first</option>
-        </select>
-      </label>
+        <label>
+          Sort:
+          <select
+            value={sortOrder}
+            onChange={(e) => setSortOrder(e.target.value)}
+          >
+            <option value="desc">Newest first</option>
+            <option value="asc">Oldest first</option>
+          </select>
+        </label>
+      </div>
 
       {loading && <p>Loading ...</p>}
 
       {/* No workouts */}
-      {!loading && workout.length == 0 && <p>No workouts yet</p>}
+      {!loading && workout.length === 0 && <p>No workouts yet</p>}
 
       {/* Workout list */}
       {!loading && workout.length > 0 && (
-        <div>
+        <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
           {workout.map((item) => (
-            <div key={item._id}>
-              <h3>{item.exerciseName}</h3>
-              <p>Sets: {item.sets}</p>
-              <p>Reps: {item.reps}</p>
-
-              {item.weight !== undefined && <p>Weight: {item.weight}</p>}
-              {item.date && (
-                <p>Date: {new Date(item.date).toLocaleDateString()}</p>
-              )}
-              <p>Status: {item.completed ? "Done" : "Not Done"}</p>
-              <button onClick={() => editHandler(item._id)}>Edit</button>
-              <button onClick={() => handleDeleteWorkout(item._id)}>
-                Delete
-              </button>
+            <div key={item._id} className="workout-card">
+              <div>
+                <h3>{item.exerciseName}</h3>
+                <p>Sets: {item.sets} | Reps: {item.reps}</p>
+                {item.weight !== undefined && <p>Weight: {item.weight}</p>}
+                {item.date && (
+                  <p>Date: {new Date(item.date).toLocaleDateString()}</p>
+                )}
+                <p className="workout-status">
+                  Status: {item.completed ? "Done" : "Not Done"}
+                </p>
+              </div>
+              <div className="workout-actions">
+                <button
+                  type="button"
+                  className="secondary"
+                  onClick={() => editHandler(item._id)}
+                >
+                  Edit
+                </button>
+                <button
+                  type="button"
+                  className="danger"
+                  onClick={() => handleDeleteWorkout(item._id)}
+                >
+                  Delete
+                </button>
+              </div>
             </div>
           ))}
         </div>
       )}
-    </>
+    </div>
   );
 };
 
